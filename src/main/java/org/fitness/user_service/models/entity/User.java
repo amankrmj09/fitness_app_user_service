@@ -10,7 +10,6 @@ import org.hibernate.proxy.HibernateProxy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,6 +35,7 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @ToString.Exclude
     @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
              message = "Password must be at least 8 characters long and contain both letters and numbers")
     private String password;
@@ -58,9 +58,11 @@ public class User {
     private List<Role> roles;
 
     @CreatedDate
+    @Column(updatable = false,nullable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column(updatable = false,nullable = false)
     private LocalDateTime updatedAt;
 
     @Override
