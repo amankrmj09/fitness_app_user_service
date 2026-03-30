@@ -1,0 +1,198 @@
+### Create a new user with valid data
+POST http://localhost:8070/user-service/api/v1/users/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "testuser1@email.com",
+  "password": "testpassword123adsdA",
+  "firstName": "Test",
+  "lastName": "User",
+  "phoneNumber": "1234567890",
+  "roles": ["ROLE_USER"]
+}
+
+> {%
+    client.test("Status is 201 Created", function() {
+        client.assert(response.status === 201, "Expected 201 but got " + response.status);
+    });
+
+    client.test("Response has username", function() {
+        client.assert(response.body.username === "testuser", "Username mismatch");
+    });
+
+    client.test("Password is not exposed", function() {
+        client.assert(response.body.password === undefined, "Password should not be in response");
+    });
+%}
+
+### Attempt to create a user with an existing email
+POST http://localhost:8070/user-service/api/v1/users/register
+Content-Type: application/json
+
+{
+  "username": "testuser2",
+  "email": "testuser1@email.com",
+  "password": "testpassword123adsdA",
+  "firstName": "Test",
+  "lastName": "User",
+  "phoneNumber": "1234567890",
+  "roles": ["ROLE_USER"]
+}
+
+> {%
+    client.test("Duplicate email returns 409", function() {
+        client.assert(response.status === 409, "Expected 409 but got " + response.status);
+    });
+%}
+
+### Attempt to create a user with invalid email format
+POST http://localhost:8070/user-service/api/v1/users/register
+Content-Type: application/json
+
+{
+  "username": "testuser3",
+  "email": "invalid-email-format",
+  "password": "testpassword123adsdA",
+  "firstName": "Test",
+  "lastName": "User",
+  "phoneNumber": "1234567890",
+  "roles": ["ROLE_USER"]
+}
+
+> {%
+    client.test("Invalid email returns 400", function() {
+        client.assert(response.status === 400, "Expected 400 but got " + response.status);
+    });
+
+    client.test("Error message mentions email", function() {
+        client.assert(response.body.email !== undefined, "Expected email error in response");
+    });
+%}
+
+### Attempt to create a user with weak password
+POST http://localhost:8070/user-service/api/v1/users/register
+Content-Type: application/json
+
+{
+  "username": "testuser4",
+  "email": "testuser4@email.com",
+  "password": "weakpass",
+  "firstName": "Test",
+  "lastName": "User",
+  "phoneNumber": "1234567890",
+  "roles": ["ROLE_USER"]
+}
+
+> {%
+    client.test("Weak password returns 400", function() {
+        client.assert(response.status === 400, "Expected 400 but got " + response.status);
+    });
+
+    client.test("Error message mentions password", function() {
+        client.assert(response.body.password !== undefined, "Expected password error in response");
+    });
+%}
+
+### Attempt to create a user with missing required fields
+POST http://localhost:8070/user-service/api/v1/users/register
+Content-Type: application/json
+
+{
+  "username": "testuser5",
+  "email": "testuser5@email.com",
+  "password": "testpassword123adsdA"
+}
+
+> {%
+    client.test("Missing fields returns 400", function() {
+        client.assert(response.status === 400, "Expected 400 but got " + response.status);
+    });
+
+    client.test("firstName error present", function() {
+        client.assert(response.body.firstName !== undefined, "Expected firstName error");
+    });
+
+    client.test("lastName error present", function() {
+        client.assert(response.body.lastName !== undefined, "Expected lastName error");
+    });
+%}
+
+
+### Get all users
+GET http://localhost:8070/user-service/api/v1/users/all
+
+> {%
+    client.test("Status is 200 OK", function() {
+        client.assert(response.status === 200, "Expected 200 but got " + response.status);
+    });
+
+    client.test("Response is an array", function() {
+        client.assert(Array.isArray(response.body), "Expected response to be an array");
+    });
+
+    client.test("At least one user exists", function() {
+        client.assert(response.body.length > 0, "Expected at least one user in response");
+    });
+
+    // Save first user's UUID for next request
+    client.global.set("userUuid", response.body[0].id);
+%}
+
+
+### Delete a user
+DELETE http://localhost:8070/user-service/api/v1/users/delete?uuid={{userUuid}}
+Content-Type: application/json
+
+> {%
+    client.test("Status is 200 OK", function() {
+        client.assert(response.status === 200, "Expected 200 but got " + response.status);
+    });
+
+    client.test("Response has message", function() {
+        client.assert(response.body.message !== undefined, "Expected message in response");
+    });
+%}
+
+### Attempt to get a user by valid email
+@email = testuser1@email.com
+GET http://localhost:8070/user-service/api/v1/users/email/{{email}}
+
+
+### Attempt to get a user by invalid email
+@email2 = testuser3@email.com
+GET http://localhost:8070/user-service/api/v1/users/email/{{email2}}
+
+> {%
+    client.test("Get user by invalid email returns 404", function() {
+        client.assert(response.status === 404, "Expected 404 but got " + response.status);
+    });
+%}
+
+
+### Attempt to get a user by valid username
+@username = testuser
+GET http://localhost:8070/user-service/api/v1/users/username/{{username}}
+
+> {%
+    client.test("Get user by valid username returns 200", function() {
+        client.assert(response.status === 200, "Expected 200 but got " + response.status);
+    });
+
+    client.test("Username matches", function() {
+        client.assert(response.body.username === "{{username}}", "Expected username to match");
+    });
+%}
+
+### Attempt to get a user by invalid username
+@username2 = nonexistinguser
+GET http://localhost:8070/user-service/api/v1/users/username/{{username2}}
+
+> {%
+    client.test("Get user by invalid username returns 404", function() {
+        client.assert(response.status === 404, "Expected 404 but got " + response.status);
+    });
+%}
+
+
+### Cleanup - delete the test user if it still exists
