@@ -6,12 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.*;
 import org.fitness.user_service.models.enums.Role;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.proxy.HibernateProxy;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -23,7 +23,6 @@ import java.util.UUID;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@EntityListeners(AuditingEntityListener.class)
 public class User {
 
     @Id
@@ -36,9 +35,13 @@ public class User {
 
     @Column(nullable = false)
     @ToString.Exclude
-    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$",
+    @Pattern(regexp = "^(?=.*[A-Za-z])(?=.*\\d).{8,}$",
              message = "Password must be at least 8 characters long and contain both letters and numbers")
     private String password;
+
+    @NotBlank(message = "Username is required")
+    @Column(nullable = false, unique = true)
+    private String username;
 
     @NotBlank(message = "First name is required")
     private String firstName;
@@ -55,13 +58,13 @@ public class User {
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
-    private List<Role> roles;
+    private List<Role> roles = new ArrayList<>(List.of(Role.ROLE_USER));
 
-    @CreatedDate
+    @CreationTimestamp
     @Column(updatable = false,nullable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
+    @UpdateTimestamp
     @Column(updatable = false,nullable = false)
     private LocalDateTime updatedAt;
 
