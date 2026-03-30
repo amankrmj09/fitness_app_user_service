@@ -3,6 +3,7 @@ plugins {
     id("org.springframework.boot") version "3.5.13"
     id("io.spring.dependency-management") version "1.1.7"
 }
+val springCloudVersion by extra("2025.0.1")
 
 group = "org.wallecodes"
 version = "0.0.1-SNAPSHOT"
@@ -30,6 +31,8 @@ dependencies {
     
     // ✅ JPA + PostgreSQL
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.cloud:spring-cloud-starter-netflix-eureka-client")
+    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
     runtimeOnly("org.postgresql:postgresql")
     
     // ✅ Security
@@ -62,6 +65,11 @@ dependencies {
     testImplementation("org.springframework.security:spring-security-test")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+}
+dependencyManagement {
+    imports {
+        mavenBom("org.springframework.cloud:spring-cloud-dependencies:$springCloudVersion")
+    }
 }
 
 tasks.withType<Test> {
