@@ -25,17 +25,42 @@ repositories {
 }
 
 dependencies {
+    // ✅ Spring MVC (servlet-based)
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    
+    // ✅ JPA + PostgreSQL
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    compileOnly("org.projectlombok:lombok")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
     runtimeOnly("org.postgresql:postgresql")
+    
+    // ✅ Security
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    
+    // ✅ Validation
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    
+    
+    implementation("com.password4j:password4j:1.8.4")
+    
+    // ✅ JWT
+    implementation("io.jsonwebtoken:jjwt-api:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
+    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.6")
+    
+    // ✅ Utilities
+    implementation("org.modelmapper:modelmapper:3.2.6")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
+    
+    // ✅ Lombok
+    compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
+    
+    // ✅ Dev tools
+    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    
+    // ✅ Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.springframework.security:spring-security-test")
+    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
