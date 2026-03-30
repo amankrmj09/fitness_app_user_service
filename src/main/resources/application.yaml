@@ -3,9 +3,17 @@ spring:
     name: user_service
   profiles:
     active: dev
+#  security:
+#    user:
+#      name: mee
+#      password: "{noop}metoo"
 
 server:
   port: 8070
+  servlet:
+    context-path: /user-service/api/v1
+
+
 
 #eureka:
 #  client:

@@ -7,4 +7,51 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+#management:
+#
+#  server:
+#    port: 8071
+#  endpoints:
+#    web:
+#      exposure:
+#        include: health, info, metrics, env, beans, prometheus  # endpoints you want exposed
+#      base-path: /actuator   # default is /actuator
+#  endpoint:
+#    health:
+#      show-details: always   # show full health details
+#  health:
+#    diskspace:
+#      threshold: 10MB        # customize health checks
+#    db:
+#      enabled: true          # enable DB health check
+#  info:
+#    env:
+#      enabled: true          # include environment info
+#  prometheus:
+#    metrics:
+#      export:
+#        enabled: true
+#
+#
+#info:
+#  app:
+#    name: User Service
+#    version: 1.0.0
+
+
+app:
+  jwt:
+    secret: mysecretkeymysecretkeymysecretkeymysecretkeymysecretkeymysecretkey
+    expiration-ms: 3600000
+    refresh-expiration-ms: 86400000
