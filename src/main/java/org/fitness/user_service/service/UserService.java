@@ -99,4 +99,8 @@ public class UserService {
 
         return modelMapper.map(user, UserDTO.class);
     }
+
+    public boolean validateUser(UUID uuid) {
+        return userRepository.existsById(uuid);
+    }
 }
