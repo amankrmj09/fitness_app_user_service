@@ -67,7 +67,7 @@ public class UserService {
         return response;
     }
 
-    public DeleteResponseDTO deleteUser(UUID uuid) {
+    public DeleteResponseDTO deleteUser(String uuid) {
         User user = userRepository.findById(uuid).orElseThrow(
                 () -> new EntityNotFoundException("User not found with id: " + uuid)
         );
@@ -77,7 +77,7 @@ public class UserService {
         return new DeleteResponseDTO("User with %s deleted successfully".formatted(uuid));
     }
 
-    public UserDTO getUserById(UUID uuid) {
+    public UserDTO getUserById(String uuid) {
         User user = userRepository.findById(uuid).orElseThrow(
                 () -> new EntityNotFoundException("User not found with id: " + uuid)
         );
@@ -100,7 +100,7 @@ public class UserService {
         return modelMapper.map(user, UserDTO.class);
     }
 
-    public boolean validateUser(UUID uuid) {
+    public boolean validateUser(String uuid) {
         return userRepository.existsById(uuid);
     }
 }

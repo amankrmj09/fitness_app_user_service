@@ -12,6 +12,7 @@ import java.util.List;
 public class UserDTO {
     private String id;
     private String email;
+	private String username;
     private String firstName;
     private String lastName;
     @JsonInclude(JsonInclude.Include.NON_NULL)

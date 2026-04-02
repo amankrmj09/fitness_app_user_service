@@ -34,13 +34,13 @@ public class UserController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<DeleteResponseDTO> deleteUser(@RequestParam UUID uuid) {
+    public ResponseEntity<DeleteResponseDTO> deleteUser(@RequestParam String uuid) {
         DeleteResponseDTO deleteResponseDTO = userService.deleteUser(uuid);
         return ResponseEntity.status(HttpStatus.OK).body(deleteResponseDTO);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable UUID uuid) {
+    public ResponseEntity<UserDTO> getUserById(@PathVariable String uuid) {
         UserDTO userDTO = userService.getUserById(uuid);
         return ResponseEntity.ok(userDTO);
     }
@@ -52,7 +52,7 @@ public class UserController {
     }
 
     @GetMapping("/{uuid}/validate")
-    public ResponseEntity<Boolean> validateUser(@PathVariable UUID uuid) {
+    public ResponseEntity<Boolean> validateUser(@PathVariable String uuid) {
         boolean isValid = userService.validateUser(uuid);
         return ResponseEntity.status(HttpStatus.OK).body(isValid);
     }

@@ -27,7 +27,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private String id;
 
     @Email(message = "Email should be valid")
     @Column(nullable = false, unique = true)
