@@ -1,12 +1,8 @@
 spring:
   application:
-    name: user_service
+    name: user-service
   profiles:
     active: dev
-#  security:
-#    user:
-#      name: mee
-#      password: "{noop}metoo"
 
 server:
   port: 8070
