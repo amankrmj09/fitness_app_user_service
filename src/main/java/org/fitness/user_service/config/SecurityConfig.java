@@ -72,7 +72,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(
                         auth -> auth
-                        .requestMatchers("/users/**"
+                        .requestMatchers("/api/v1/users/**"
                         ,"/error").permitAll()
                         .anyRequest().authenticated()
                 )
